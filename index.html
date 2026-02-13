@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Valentine Surprise</title>
+
+<!-- Google Font -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #ffdde1, #ee9ca7);
+    transition: background 0.8s ease;
+    overflow: hidden;
+}
+
+.container {
+    width: 90%;
+    max-width: 500px;
+    text-align: center;
+    padding: 40px;
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(15px);
+    border-radius: 25px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    transition: all 0.8s ease;
+}
+
+h1 {
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+}
+
+p {
+    margin: 15px 0;
+}
+
+button {
+    padding: 12px 25px;
+    margin: 10px;
+    border: none;
+    border-radius: 30px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+}
+
+button:hover {
+    transform: scale(1.05);
+}
+
+.refresh-btn {
+    background: #ff6b81;
+    color: white;
+}
+
+.yes-btn {
+    background: #ff4e88;
+    color: white;
+}
+
+.no-btn {
+    background: #ff8fa3;
+    color: white;
+    position: relative;
+}
+
+.hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(20px);
+}
+
+.fade-in {
+    opacity: 1;
+    transform: translateY(0);
+    transition: all 0.6s ease;
+}
+
+.message {
+    margin-top: 20px;
+    font-size: 0.95rem;
+}
+
+.confetti {
+    position: fixed;
+    width: 10px;
+    height: 10px;
+    background-color: red;
+    top: -10px;
+    animation: fall linear forwards;
+}
+
+@keyframes fall {
+    to {
+        transform: translateY(100vh) rotate(360deg);
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- 404 Screen -->
+    <div id="errorScreen">
+        <h1>404 - Page Not Found</h1>
+        <p>Oops! Looks like love took a wrong turn 💔</p>
+        <button class="refresh-btn" onclick="showValentine()">Refresh</button>
+    </div>
+
+    <!-- Valentine Screen -->
+    <div id="valentineScreen" class="hidden">
+        <h1>Will you be my Valentine? <span id="emoji">💔</span></h1>
+        <div id="buttons">
+            <button class="yes-btn" onclick="yesClicked()">YES</button>
+            <button class="no-btn" id="noBtn" onclick="noClicked()">NO</button>
+        </div>
+        <div class="message hidden" id="yesMessage">
+            <p><strong>By clicking YES you agree to:</strong></p>
+            <p>- Unlimited cuddles</p>
+            <p>- Lifetime supply of bad puns</p>
+            <p>- Mutual pizza stealing rights</p>
+            <p><strong>Effective immediately! 🚀</strong></p>
+        </div>
+    </div>
+
+</div>
+
+<script>
+let noClickCount = 0;
+
+function showValentine() {
+    document.getElementById("errorScreen").classList.add("hidden");
+    setTimeout(() => {
+        document.getElementById("valentineScreen").classList.remove("hidden");
+        document.getElementById("valentineScreen").classList.add("fade-in");
+    }, 600);
+}
+
+function yesClicked() {
+    const message = document.getElementById("yesMessage");
+    const buttons = document.getElementById("buttons");
+
+    message.classList.remove("hidden");
+
+    setTimeout(() => {
+        buttons.classList.add("hidden");
+    }, 1000);
+
+    launchConfetti();
+}
+
+function noClicked() {
+    const noBtn = document.getElementById("noBtn");
+    const body = document.body;
+
+    // Random position jump
+    const x = Math.random() * (window.innerWidth - 100);
+    const y = Math.random() * (window.innerHeight - 50);
+    noBtn.style.position = "fixed";
+    noBtn.style.left = x + "px";
+    noBtn.style.top = y + "px";
+
+    // Change background gradient
+    const colors = [
+        ["#a18cd1", "#fbc2eb"],
+        ["#fad0c4", "#ffd1ff"],
+        ["#ff9a9e", "#fecfef"],
+        ["#f6d365", "#fda085"]
+    ];
+    const random = colors[Math.floor(Math.random() * colors.length)];
+    body.style.background = `linear-gradient(135deg, ${random[0]}, ${random[1]})`;
+
+    noClickCount++;
+
+    if (noClickCount >= 2) {
+        document.getElementById("emoji").innerText = "😭";
+    }
+}
+
+function launchConfetti() {
+    const duration = 5000;
+    const end = Date.now() + duration;
+
+    const interval = setInterval(() => {
+        if (Date.now() > end) {
+            clearInterval(interval);
+            return;
+        }
+
+        const confetti = document.createElement("div");
+        confetti.classList.add("confetti");
+        confetti.style.left = Math.random() * window.innerWidth + "px";
+        confetti.style.backgroundColor = 
+            `hsl(${Math.random()*360}, 100%, 50%)`;
+        confetti.style.animationDuration = (Math.random()*2 + 3) + "s";
+
+        document.body.appendChild(confetti);
+
+        setTimeout(() => {
+            confetti.remove();
+        }, 5000);
+
+    }, 100);
+}
+</script>
+
+</body>
+</html>
